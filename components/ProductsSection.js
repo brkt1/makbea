@@ -1,7 +1,8 @@
-
-'use client'; // Marking this component as a client component
+'use client'; 
 
 import { useEffect, useState } from 'react';
+import { supabase, isUserAdmin } from '../lib/supabaseService';
+import ProductUpload from './ProductUpload';
 
 const ProductsSection = () => {
     const [products, setProducts] = useState([]);
@@ -9,44 +10,31 @@ const ProductsSection = () => {
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [cart, setCart] = useState([]);
     const [selectedProduct, setSelectedProduct] = useState(null);
+    const [showUploadModal, setShowUploadModal] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
-        // Initialize products
-        const initialProducts = [
-            {
-                id: 1,
-                name: "Geometric Desk Organizer",
-                price: 45.99,
-                image: "",
-                category: "home",
-                description: "Minimalist 3D printed desk organizer with multiple compartments for pens, cards, and small items.",
-                features: [
-                    "Multi-compartment design",
-                    "Sleek geometric shape",
-                    "Available in 5 colors"
-                ],
-                inStock: true
-            },
-            {
-                id: 2,
-                name: "Smartphone Charging Station",
-                price: 59.99,
-                image: "https://m.media-amazon.com/images/I/61tRIpIAMfL._AC_SL1500_.jpg",
-                category: "tech",
-                description: "Elegant wooden-style charging dock for multiple devices with cable management.",
-                features: [
-                    "Supports smartphone and wireless earbuds",
-                    "Cable management system",
-                    "Compatible with most devices"
-                ],
-                inStock: true
-            },
-            // Add other products here...
-        ];
-
-        setProducts(initialProducts);
-        setFilteredProducts(initialProducts);
+        fetchProducts();
+        checkAdminStatus();
     }, []);
+
+    const checkAdminStatus = async () => {
+        const adminStatus = await isUserAdmin();
+        setIsAdmin(adminStatus);
+    };
+
+    const fetchProducts = async () => {
+        const { data, error } = await supabase
+            .from('products')
+            .select('*');
+
+        if (error) {
+            console.error('Error fetching products:', error);
+        } else {
+            setProducts(data);
+            setFilteredProducts(data);
+        }
+    };
 
     const filterCategory = (category) => {
         setCurrentCategory(category);
@@ -69,19 +57,17 @@ const ProductsSection = () => {
         showCartNotification(product);
     };
 
-const showCartNotification = (product) => {
-    // Clear existing notifications before showing a new one
-    const existingNotifications = document.querySelectorAll('.cart-notification');
-    existingNotifications.forEach(notification => notification.remove());
+    const showCartNotification = (product) => {
+        const existingNotifications = document.querySelectorAll('.cart-notification');
+        existingNotifications.forEach(notification => notification.remove());
 
-
-    const notification = document.createElement('div');
-    notification.className = 'cart-notification fixed top-4 right-4 text-black px-4 py-2 rounded-lg shadow-lg';
-    notification.textContent = `${product.name} added to cart`;
-    document.body.appendChild(notification);
-    setTimeout(() => {
-        document.body.removeChild(notification);
-    }, 3000);
+        const notification = document.createElement('div');
+        notification.className = 'cart-notification fixed top-4 right-4 text-black px-4 py-2 rounded-lg shadow-lg';
+        notification.textContent = `${product.name} added to cart`;
+        document.body.appendChild(notification);
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 3000);
     };
 
     const removeFromCart = (productId) => {
@@ -92,6 +78,11 @@ const showCartNotification = (product) => {
         return cart.reduce((total, item) => 
             total + (item.price * (item.quantity || 1)), 0
         ).toFixed(2);
+    };
+
+    const handleUploadSuccess = () => {
+        fetchProducts();
+        setShowUploadModal(false);
     };
 
     return (
@@ -106,6 +97,14 @@ const showCartNotification = (product) => {
                         Explore our unique range of meticulously crafted 3D printed designs, 
                         perfect for every space and occasion.
                     </p>
+                    {isAdmin && (
+                        <button
+                            onClick={() => setShowUploadModal(true)}
+                            className="bg-gradient-to-r from-cyan-400 to-blue-500 text-white px-6 py-2 rounded-full hover:opacity-90 transition duration-300"
+                        >
+                            Upload New Product
+                        </button>
+                    )}
                 </div>
                 
                 <div className="flex justify-center mb-8 space-x-4">
@@ -131,7 +130,7 @@ const showCartNotification = (product) => {
                         >
                             <div className="relative overflow-hidden">
                                 <img 
-                                    src={product.image || 'https://via.placeholder.com/400x300?text=3D+Printed+Product'} 
+                                    src={product.image_url || 'https://via.placeholder.com/400x300?text=3D+Printed+Product'} 
                                     alt={product.name}
                                     className="w-full h-72 object-cover transform scale-100 group-hover:scale-110 transition duration-500 ease-in-out"
                                 />
@@ -141,12 +140,12 @@ const showCartNotification = (product) => {
                             <div className="absolute bottom-0 left-0 right-0 p-4 backdrop-blur-sm transform translate-y-full group-hover:translate-y-0 transition duration-400">
                                 <div className="flex justify-between items-center">
                                     <div>
-                                        <h3 className="text-xl font-bold text-gray-500 truncate mb-1">{product.name}</h3>
+                                        <h4 className="text-xl font-bold text-gray-500 truncate mb-1">{product.name}</h4>
                                         <span className="text-gray-300 text-lg font-medium">${product.price.toFixed(2)}</span>
                                     </div>
                                     <button 
                                         onClick={(e) => { e.stopPropagation(); addToCart(product); }}
-                                        className="bg-cyan-400 text-[#00ffc2]/50 px-4 py-2 rounded-full hover:bg-cyan-300 transition duration-300 flex items-center space-x-2 group"
+                                        className="bg-cyan-400 px-4 py-2 rounded-full hover:bg-cyan transition duration-300 flex items-center space-x-2 group"
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
@@ -159,13 +158,28 @@ const showCartNotification = (product) => {
                     ))}
                 </div>
 
+                {/* Product Upload Modal - Only shown to admin users */}
+                {showUploadModal && isAdmin && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+                        <div className="bg-navy-900 rounded-3xl max-w-2xl w-full p-8 relative">
+                            <button 
+                                onClick={() => setShowUploadModal(false)}
+                                className="absolute top-4 right-4 text-gray-500 hover:text-gray-400"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                            <h3 className="text-2xl font-bold text-gray-300 mb-6">Upload New Product</h3>
+                            <ProductUpload onUploadSuccess={handleUploadSuccess} />
+                        </div>
+                    </div>
+                )}
+
                 {/* Product Detail Modal */}
                 {selectedProduct && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-                        <div 
-                            onClick={() => setSelectedProduct(null)}
-                            className="backdrop-blur-lg rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-700/50 transform transition-all duration-400 scale-95 hover:scale-100"
-                        >
+                        <div className="backdrop-blur-lg rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-700/50 transform transition-all duration-400 scale-95 hover:scale-100">
                             <button 
                                 onClick={() => setSelectedProduct(null)}
                                 className="absolute top-6 right-6 text-gray-500 rounded-full p-2 hover:bg-gray-700/50 transition duration-300 z-10"
@@ -178,7 +192,7 @@ const showCartNotification = (product) => {
                             <div className="grid md:grid-cols-2 gap-8 p-8">
                                 <div className="relative">
                                     <img 
-                                        src={selectedProduct.image} 
+                                        src={selectedProduct.image_url} 
                                         alt={selectedProduct.name}
                                         className="w-full rounded-2xl shadow-2xl transform transition duration-500 hover:scale-105 object-cover"
                                     />
@@ -192,7 +206,7 @@ const showCartNotification = (product) => {
                                     <div>
                                         <h3 className="text-xl font-semibold text-gray-500 mb-3">Features:</h3>
                                         <ul className="space-y-2 text-gray-400">
-                                            {selectedProduct.features.map((feature, index) => (
+                                            {selectedProduct.features && selectedProduct.features.map((feature, index) => (
                                                 <li key={index} className="flex items-center space-x-2 before:content-['▶'] before:text-cyan-400 before:mr-2">
                                                     {feature}
                                                 </li>

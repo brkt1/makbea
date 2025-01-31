@@ -1,57 +1,175 @@
-// components/AboutSection.js
-'use client'; // Marking this component as a client component
+'use client';
+
+import { motion } from 'framer-motion';
+import { FaLightbulb, FaLeaf, FaCode } from 'react-icons/fa';
 
 const AboutSection = () => {
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: { 
+            opacity: 1, 
+            transition: { 
+                staggerChildren: 0.3,
+                delayChildren: 0.2 
+            } 
+        }
+    };
+
+    const itemVariants = {
+        hidden: { y: 20, opacity: 0 },
+        visible: { 
+            y: 0, 
+            opacity: 1,
+            transition: { 
+                duration: 0.6,
+                ease: "easeOut" 
+            }
+        }
+    };
+
     return (
-        <section id="about" className="py-16 relative overflow-hidden">
-            <div className="absolute inset-0 opacity-20 pointer-events-none"></div>
-            <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center relative z-10">
-                <div className="space-y-6">
-                    <h2 className="text-5xl font-bold mb-6 text-primary tracking-tight leading-tight">
-                        Redefining <br/><span className="text-gray-500">Design Possibilities</span>
-                    </h2>
-                    <div className="space-y-4">
-                        <p className="text-gray-300 text-lg leading-relaxed flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-3 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                            </svg>
-                            Pioneering the future of design through cutting-edge 3D printing technology
-                        </p>
-                        <p className="text-gray-300 text-lg leading-relaxed flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-3 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
-                            </svg>
-                            Committed to sustainable innovation and eco-conscious design
-                        </p>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6">
-                        <div className="bg-gradient-to-br p-5 rounded-lg text-center transform transition hover:scale-105 hover:shadow-lg">
-                            <h3 className="text-3xl font-bold text-primary mb-2 animate-pulse">100%</h3>
-                            <p className="text-gray-400">Custom Designs</p>
+        <section 
+            id="about" 
+            className="py-16 md:py-24 lg:py-32 relative overflow-hidden 
+            bg-gradient-to-br from-navy-900 to-navy-800"
+        >
+            {/* Decorative Background Elements */}
+            <motion.div 
+                className="absolute top-0 left-0 w-72 h-72 bg-primary/10 rounded-full blur-3xl"
+                animate={{ 
+                    scale: [1, 1.2, 1],
+                    opacity: [0.6, 0.8, 0.6]
+                }}
+                transition={{ 
+                    duration: 3, 
+                    repeat: Infinity 
+                }}
+            />
+            <motion.div 
+                className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl"
+                animate={{ 
+                    scale: [1, 1.2, 1],
+                    opacity: [0.6, 0.8, 0.6]
+                }}
+                transition={{ 
+                    duration: 3, 
+                    repeat: Infinity,
+                    delay: 0.5
+                }}
+            />
+
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                <motion.div 
+                    className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-center relative z-10"
+                    variants={containerVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                >
+                    {/* Text Content */}
+                    <motion.div className="space-y-8" variants={itemVariants}>
+                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white tracking-tight leading-tight">
+                            Redefining <br/>
+                            <span className="text-primary">Design Possibilities</span>
+                        </h2>
+                        
+                        <div className="space-y-6">
+                            {[
+                                { 
+                                    icon: <FaLightbulb />, 
+                                    text: "Pioneering the future of design through cutting-edge 3D printing technology" 
+                                },
+                                { 
+                                    icon: <FaLeaf />, 
+                                    text: "Committed to sustainable innovation and eco-conscious design" 
+                                }
+                            ].map((item, index) => (
+                                <motion.p 
+                                    key={index}
+                                    className="text-gray-300 text-lg leading-relaxed flex items-center"
+                                    variants={itemVariants}
+                                >
+                                    <span className="h-8 w-8 mr-4 text-primary">
+                                        {item.icon}
+                                    </span>
+                                    <span>{item.text}</span>
+                                </motion.p>
+                            ))}
                         </div>
-                        <div className="bg-gradient-to-br p-5 rounded-lg text-center transform transition hover:scale-105 hover:shadow-lg">
-                            <h3 className="text-3xl font-bold text-primary mb-2">∞</h3>
-                            <p className="text-gray-400">Innovative Solutions</p>
+
+                        {/* Stats Grid */}
+                        <motion.div 
+                            className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-8"
+                            variants={containerVariants}
+                        >
+                            {[
+                                { value: "100%", label: "Custom Designs", icon: <FaCode /> },
+                                { value: "∞", label: "Innovative Solutions", icon: <FaLightbulb /> },
+                                { value: "24/7", label: "Support", icon: <FaLeaf /> }
+                            ].map((stat, index) => (
+                                <motion.div 
+                                    key={index}
+                                    className="bg-navy-700 border border-white/10 p-6 rounded-xl text-center 
+                                    transform transition duration-300 
+                                    hover:scale-105 hover:shadow-2xl 
+                                    hover:border-primary/30"
+                                    variants={itemVariants}
+                                    whileHover={{ scale: 1.05 }}
+                                >
+                                    <div className="text-primary mb-2 text-4xl flex justify-center">
+                                        {stat.icon}
+                                    </div>
+                                    <h3 className="text-4xl font-bold text-primary mb-2">
+                                        {stat.value}
+                                    </h3>
+                                    <p className="text-gray-400 text-sm uppercase tracking-wider">
+                                        {stat.label}
+                                    </p>
+                                </motion.div>
+                            ))}
+                        </motion.div>
+                    </motion.div>
+
+                    {/* Image Section */}
+                    <motion.div 
+                        className="relative group"
+                        variants={itemVariants}
+                    >
+                        <motion.div 
+                            className="absolute -inset-4 bg-gradient-to-br 
+                            from-primary/20 to-cyan-500/20 
+                            rounded-2xl blur-2xl 
+                            opacity-0 group-hover:opacity-50 
+                            transition duration-500"
+                            whileHover={{ scale: 1.05 }}
+                        />
+
+                        <div className="relative overflow-hidden rounded-2xl shadow-2xl">
+                            <motion.img 
+                                src="https://www.shutterstock.com/image-photo/hand-show-icon-address-phone-600nw-2475999141.jpg" 
+                                alt="Makbea Innovation" 
+                                className="w-full h-[400px] md:h-[500px] lg:h-[600px] 
+                                object-cover rounded-2xl"
+                                whileHover={{ scale: 1.05 }}
+                                transition={{ duration: 0.5 }}
+                            />
+                            
+                            <motion.div 
+                                className="absolute bottom-0 left-0 right-0 
+                                bg-black/60 backdrop-blur-sm 
+                                p-4 transform translate-y-full 
+                                group-hover:translate-y-0 
+                                transition duration-500"
+                                initial={{ y: '100%' }}
+                                whileHover={{ y: 0 }}
+                            >
+                                <p className="text-gray-300 text-sm text-center">
+                                    Pushing the boundaries of design and technology
+                                </p>
+                            </motion.div>
                         </div>
-                        <div className="bg-gradient-to-br p-5 rounded-lg text-center transform transition hover:scale-105 hover:shadow-lg">
-                            <h3 className="text-3xl font-bold text-primary mb-2">24/7</h3>
-                            <p className="text-gray-400">Support</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="relative">
-                    <div className="absolute -inset-2 rounded-xl blur-2xl opacity-50"></div>
-                    <img 
-                        src="https://www.shutterstock.com/image-photo/ hand-show-icon-address-phone-600nw-2475999141.jpg" 
-                        alt="Makbea Innovation" 
-                        className="w-full h-[500px] object-cover rounded-xl relative z-10 shadow-2xl border-2 border-primary/20 transform transition hover:scale-105"
-                    />
-                    <div className="absolute bottom-4 left-4 right-4 bg-black/60 backdrop-blur-sm rounded-lg p-4 z-20">
-                        <p className="text-gray-500 text-sm text-center">
-                            Pushing the boundaries of design and technology
-                        </p>
-                    </div>
-                </div>
+                    </motion.div>
+                </motion.div>
             </div>
         </section>
     );
