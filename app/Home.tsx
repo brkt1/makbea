@@ -2,12 +2,18 @@
 
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
+import ProductsSection from '../components/ProductsSection'; // Importing ProductsSection
 import './globals.css'; // Import global styles if needed
 
 const Home = () => {
     const [cart, setCart] = useState<any[]>([]);
     const [selectedProduct, setSelectedProduct] = useState<any>(null);
-    const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+    const [isDarkMode, setIsDarkMode] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('darkMode') === 'true';
+        }
+        return false; // Default value for server-side rendering
+    });
 
     useEffect(() => {
         const darkMode = localStorage.getItem('darkMode') === 'true';
@@ -45,7 +51,8 @@ const Home = () => {
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
                 <style>
-                    {`
+                    {`a[/
+                    k]
                         html {
                             scroll-behavior: smooth;
                         }
@@ -74,7 +81,7 @@ const Home = () => {
                     `}
                 </script>
             </Head>
-            <div className="text-black dark:bg-black dark:text-gray-500">
+            <div className={`text-black ${isDarkMode ? 'bg-black text-gray-500' : 'bg-white'}`}>
                 {/* Navigation */}
                 <nav className="fixed top-0 left-0 right-0 z-50 bg-opacity-50 backdrop-blur-sm dark:bg-black dark:bg-opacity-50">
                     <div className="container mx-auto flex justify-between items-center p-4">
@@ -102,9 +109,7 @@ const Home = () => {
                 </section>
 
                 {/* Products Section */}
-                <section id="products" className="min-h-screen bg-gradient-to-br from-navy-900 to-navy-800 py-16 relative">
-                    {/* Products Content */}
-                </section>
+                <ProductsSection />
 
                 {/* Testimonials Section */}
                 <section id="testimonials" className="py-16 relative overflow-hidden">
