@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.48.1",
+    "aos": "^2.3.4",
     "framer-motion": "^12.0.6",
     "next": "^15.1.6",
     "react": "^18.2.0",

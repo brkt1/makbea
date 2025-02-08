@@ -1,6 +1,7 @@
 'use client'; // Marking this component as a client component
 
 import { useEffect } from 'react';
+import useOnScreen from './useOnScreen';
 
 const HeroSection = () => {
     useEffect(() => {
@@ -18,16 +19,17 @@ const HeroSection = () => {
     return (
         <section 
             id="hero" 
-            className="py-16 relative overflow-hidden"
+            className="py-16 relative overflow-hidden bg-cover bg-center"
+            style={{ backgroundImage: 'url("https://www.eazao.com/wp-content/uploads/2021/06/vase3-711x400.png")' }}
         >
-            <div className="min-h-screen flex items-center justify-center relative bg-gradient-to-br from-navy-800 to-primary/10 overflow-hidden">
+            <div className="min-h-screen flex items-center justify-center relative bg-gradient-to-br from-navy-800 to-primary/10 overflow-hidden ">
                 <div className="absolute top-0 left-0 w-full h-full opacity-5 bg-pattern pointer-events-none"></div>
                 
                 <div 
                     id="hero-content" 
                     className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center relative z-10 px-4 md:px-8 lg:px-16 py-8 md:py-16"
                 >
-                    <div className="space-y-6 text-center md:text-left">
+                    <div className="space-y-6 text-center md:text-left bg-white bg-opacity-50 rounded-lg p-4">
                         <div className="overflow-hidden">
                             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary dark:text-primary-light transform translate-y-full opacity-0 transition-all duration-700 ease-out hero-title">
                                 MAKBEA
@@ -78,18 +80,12 @@ const HeroSection = () => {
                     <div className="relative group">
                         <div className="absolute -inset-4 bg-primary/20 dark:bg-primary-light/10 rounded-3xl blur-2xl group-hover:blur-3xl transition-all duration-500"></div>
                         <div className="relative overflow-hidden rounded-2xl shadow-2xl">
-                            <img 
-                                src="https://cdn.shopify.com/s/files/1/0436/6965/1618/files/210714_Blog_3D_Printed_Home_Deco_3_1024x1024.jpg?v=1627262103" 
-                                alt="Makbea 3D Print" 
-                                className="w-full h-auto md:h-[500px] lg:h-[600px] object-cover rounded-2xl transform scale-100 group-hover:scale-105 transition-transform duration-500 ease-in-out"
-                            />
                             <div className="absolute inset-0 bg-black/10 dark:bg-white/10 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-    
     );
 };
 

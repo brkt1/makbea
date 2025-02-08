@@ -2,8 +2,11 @@
 
 import { motion } from 'framer-motion';
 import { FaLightbulb, FaLeaf, FaCode } from 'react-icons/fa';
+import useOnScreen from './useOnScreen';
 
 const AboutSection = () => {
+    const [setRef, isVisible] = useOnScreen({ threshold: 0.1 });
+
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: { 
@@ -32,6 +35,7 @@ const AboutSection = () => {
             id="about" 
             className="py-16 md:py-24 lg:py-32 relative overflow-hidden 
             bg-gradient-to-br from-navy-900 to-navy-800"
+            ref={setRef}
         >
             {/* Decorative Background Elements */}
             <motion.div 
@@ -63,8 +67,7 @@ const AboutSection = () => {
                     className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-center relative z-10"
                     variants={containerVariants}
                     initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
+                    animate={isVisible ? "visible" : "hidden"}
                 >
                     {/* Text Content */}
                     <motion.div className="space-y-8" variants={itemVariants}>
@@ -74,7 +77,7 @@ const AboutSection = () => {
                         </h2>
                         
                         <div className="space-y-6">
-                            {[
+                            {[ 
                                 { 
                                     icon: <FaLightbulb />, 
                                     text: "Pioneering the future of design through cutting-edge 3D printing technology" 
@@ -102,7 +105,7 @@ const AboutSection = () => {
                             className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-8"
                             variants={containerVariants}
                         >
-                            {[
+                            {[ 
                                 { value: "100%", label: "Custom Designs", icon: <FaCode /> },
                                 { value: "∞", label: "Innovative Solutions", icon: <FaLightbulb /> },
                                 { value: "24/7", label: "Support", icon: <FaLeaf /> }
