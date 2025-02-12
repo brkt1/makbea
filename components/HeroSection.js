@@ -19,10 +19,12 @@ const HeroSection = () => {
     return (
         <section 
             id="hero" 
-            className="py-16 relative overflow-hidden bg-cover bg-center"
-            style={{ backgroundImage: 'url("https://www.eazao.com/wp-content/uploads/2021/06/vase3-711x400.png")' }}
+            className="py-16 relative overflow-hidden bg-cover bg-center h-full max-h-[700px]" // Set max height here
+            style={{ 
+                backgroundImage: 'url("https://www.eazao.com/wp-content/uploads/2021/06/vase3-711x400.png")'
+            }}
         >
-            <div className="min-h-screen flex items-center justify-center relative bg-gradient-to-br from-navy-800 to-primary/10 overflow-hidden ">
+            <div className="min-h-screen flex items-center justify-center relative bg-gradient-to-br from-navy-800 to-primary/10 overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-full opacity-5 bg-pattern pointer-events-none"></div>
                 
                 <div 
@@ -40,7 +42,7 @@ const HeroSection = () => {
                         </div>
                         
                         <div className="overflow-hidden">
-                            <p className="text-lg md:text-xl lg:text-2xl  text-gray-700 max-w-md mx-auto md:mx-0 transform translate-y-full opacity-0 transition-all duration-700 ease-out delay-200 hero-subtitle">
+                            <p className="text-lg md:text-xl lg:text-2xl text-gray-700 max-w-md mx-auto md:mx-0 transform translate-y-full opacity-0 transition-all duration-700 ease-out delay-200 hero-subtitle">
                                 Crafting Unique 3D Printed Designs for Home, Office, and Personalized Gifts
                             </p>
                         </div>

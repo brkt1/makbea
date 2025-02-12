@@ -125,7 +125,7 @@ const ProductsSection = () => {
                 
                 
                 {currentProduct && (
-                    <div className="flex flex-col md:flex-row items-center justify-center p-10 rounded-lg shadow-lg relative">
+                    <div className="flex flex-col md:flex-row items-center justify-center p-2 rounded-lg shadow-lg relative">
                         <button onClick={prevProduct} className=" ml-5 text-gray-800 px-4 py-2 rounded-full hover:bg-gray-400 transition duration-300 transform hover:scale-105">Previous</button>
 
                         {/* Background Circle */}
@@ -137,12 +137,12 @@ const ProductsSection = () => {
                         </div>
 
                         {currentProduct && (
-                            <div className="flex flex-col w-[500] md:flex-row items-center justify-center p-10 rounded-lg shadow-lg">
+                            <div className="flex flex-col w-auto md:flex-row items-center justify-center p-10 rounded-lg shadow-lg">
                                 <div className="flex flex-col items-center md:items-start md:w-1/2 mb-8 md:mb-0">
                                     <h3 className="text-5xl font-serif font-bold text-gray-800 mb-4">{currentProduct.name}</h3>
                                     <p className="text-gray-600 text-lg text-center md:text-left mb-6">{currentProduct.description}</p>
                                     <span className="text-3xl font-serif font-bold text-gray-800 mb-4">
-                                        ${currentProduct.price}
+                             
                                     </span>
                                     <button 
                                         onClick={() => addToCart(currentProduct)} 
@@ -153,14 +153,14 @@ const ProductsSection = () => {
                                 </div>
                             </div>
                         )}
-                        <div className="flex justify-center space-x-4 mt-6"></div>
+                        <div className="flex justify-center space-x-4"></div>
 
                         {/* Image Container */}
                         <div className="relative overflow-hidden cursor-pointer">
                             <img 
                                 src={currentProduct.image_url || 'https://via.placeholder.com/400x300?text=3D+Printed+Product'} 
                                 alt={currentProduct.name}
-                                className="w-[400px] h-[400] object-cover relative z-20 rounded-lg shadow-lg" 
+                                className="w-auto h-[400] object-cover relative z-20 rounded-lg shadow-lg" 
                                 onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/400x300?text=Image+Not+Available'; }} // Fallback image on error
                             />
                         </div>

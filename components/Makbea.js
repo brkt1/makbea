@@ -4,7 +4,8 @@ import Head from 'next/head';
 
 const Makbea = () => {
     const [cart, setCart] = useState([]);
-    const [isDarkMode, setIsDarkMode] = useState(false);
+    const [isDarkMode, setIsDarkMode] = useState(true);
+
 
     useEffect(() => {
         // Check for saved dark mode preference or system preference
@@ -13,10 +14,12 @@ const Makbea = () => {
         
         const initialDarkMode = savedDarkMode !== null 
             ? savedDarkMode === 'true' 
-            : systemPrefersDark;
+            : false;
+
         
         setIsDarkMode(initialDarkMode);
-        applyDarkMode(initialDarkMode);
+            applyDarkMode(false);
+
 
         // Listen for system dark mode changes
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -55,12 +58,15 @@ const Makbea = () => {
     };
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/25 backdrop-blur-sm">
-        <div className="container mx-auto flex justify-around items-center p-4">
+<nav className="fixed w-auto top-0 left-0 right-0 z-50 bg-white/25 backdrop-blur-sm p-4">
+
+<div className="container mx-auto flex justify-between items-center">
+
             <div className="text-2xl font-bold text-black">
                 MAKBEA
             </div>
-            <div className="flex space-x-4 items-center">
+<div className="flex space-x-2 items-center">
+
                 <button
                     onClick={() => setCart([])}
                     className="relative group"

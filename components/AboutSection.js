@@ -148,14 +148,7 @@ const AboutSection = () => {
                         />
 
                         <div className="relative overflow-hidden rounded-2xl shadow-2xl">
-                            <motion.img 
-                                src="https://www.shutterstock.com/image-photo/hand-show-icon-address-phone-600nw-2475999141.jpg" 
-                                alt="Makbea Innovation" 
-                                className="w-full h-[400px] md:h-[500px] lg:h-[600px] 
-                                object-cover rounded-2xl"
-                                whileHover={{ scale: 1.05 }}
-                                transition={{ duration: 0.5 }}
-                            />
+                            
                             
                             <motion.div 
                                 className="absolute bottom-0 left-0 right-0 

@@ -45,9 +45,7 @@ export default function Page() {
       <HeroSection /> 
       <ProductsSection addToCart={addToCart} cart={cart} /> {/* Pass props */}
       <ProductDisplay cart={cart} /> {/* Pass props */}
-      <CategoriesSection />
       <TestimonialsSection />
-      <ContactSection />
       <AboutSection />
       <Footer />
       
