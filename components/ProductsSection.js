@@ -5,12 +5,10 @@ import { supabase, isUserAdmin } from '../lib/supabaseService';
 
 import ProductUpload from './ProductUpload';
 
-
 const ProductsSection = () => {
     const [products, setProducts] = useState([]);
     const [currentCategory, setCurrentCategory] = useState('all');
     const [filteredProducts, setFilteredProducts] = useState([]);
-    const [cart, setCart] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0); // Track the current product index
     const [showUploadModal, setShowUploadModal] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
@@ -21,9 +19,19 @@ const ProductsSection = () => {
     }, []);
 
     const checkAdminStatus = async () => {
-        const adminStatus = await isUserAdmin();
+        // Get current user session
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (!user) {
+            setIsAdmin(false);
+            return;
+        }
+
+        // Check if the user is an admin
+        const adminStatus = await isUserAdmin(user.id);
         setIsAdmin(adminStatus);
     };
+
 
     const fetchProducts = async () => {
         const { data, error } = await supabase
@@ -46,40 +54,6 @@ const ProductsSection = () => {
             : products.filter(product => product.category === category);
         setFilteredProducts(filtered);
         setCurrentIndex(0); // Reset index when category is changed
-    };
-
-    const addToCart = (product) => {
-        const existingProduct = cart.find(item => item.id === product.id);
-        if (existingProduct) {
-            existingProduct.quantity = (existingProduct.quantity || 1) + 1;
-        } else {
-            setCart([...cart, { ...product, quantity: 1 }]);
-        }
-        showCartNotification(product);
-    };
-
-    const showCartNotification = (product) => {
-        const existingNotifications = document.querySelectorAll('.cart-notification');
-        existingNotifications.forEach(notification => notification.remove());
-
-        const notification = document.createElement('div');
-        notification.className = 'cart-notification fixed top-4 right-4 text-black px-4 py-2 rounded-lg shadow-lg';
-        notification.textContent = `${product.name} added to cart`;
-        document.body.appendChild(notification);
-        setTimeout(() => {
-            document.body.removeChild(notification);
-        }, 3000);
-    };
-
-    const calculateTotal = () => {
-        return cart.reduce((total, item) => 
-            total + (item.price * (item.quantity || 1)), 0
-        ).toFixed(2);
-    };
-
-    const handleUploadSuccess = () => {
-        fetchProducts();
-        setShowUploadModal(false);
     };
 
     const nextProduct = () => {
@@ -122,11 +96,9 @@ const ProductsSection = () => {
                     )}
                 </div>
                 
-                
-                
                 {currentProduct && (
                     <div className="flex flex-col md:flex-row items-center justify-center p-2 rounded-lg shadow-lg relative">
-                        <button onClick={prevProduct} className=" ml-5 text-gray-800 px-4 py-2 rounded-full hover:bg-gray-400 transition duration-300 transform hover:scale-105">Previous</button>
+                        <button onClick={prevProduct} className="ml-5 text-gray-800 px-4 py-2 rounded-full hover:bg-gray-400 transition duration-300 transform hover:scale-105">Previous</button>
 
                         {/* Background Circle */}
                         <div className="absolute right-1/4 transform -translate-x-1/44 -translate-y-1/4 flex items-center justify-center">
@@ -141,15 +113,7 @@ const ProductsSection = () => {
                                 <div className="flex flex-col items-center md:items-start md:w-1/2 mb-8 md:mb-0">
                                     <h3 className="text-5xl font-serif font-bold text-gray-800 mb-4">{currentProduct.name}</h3>
                                     <p className="text-gray-600 text-lg text-center md:text-left mb-6">{currentProduct.description}</p>
-                                    <span className="text-3xl font-serif font-bold text-gray-800 mb-4">
-                             
-                                    </span>
-                                    <button 
-                                        onClick={() => addToCart(currentProduct)} 
-                                        className="bg-gray-300 text-gray-800 py-3 px-8 w-40 rounded-full hover:bg-gray-400 transition duration-300 font-semibold shadow-lg transform hover:scale-105"
-                                    >
-                                        Add to Cart
-                                    </button>
+                                    <span className="text-3xl font-serif font-bold text-gray-800 mb-4"></span>
                                 </div>
                             </div>
                         )}
@@ -185,49 +149,7 @@ const ProductsSection = () => {
                         </div>
                     </div>
                 )}
-
-                {/* Cart Modal */}
-                {cart.length > 0 && (
-                    <div className="fixed bottom-6 right-6 backdrop-blur-lg rounded-2xl shadow-2xl border border-gray-700/50 w-96 transform transition-all duration-400 hover:scale-105">
-                        <div className="p-6">
-                            <div className="flex justify-between items-center mb-6">
-                                <h3 className="text-2xl font-bold text-transparent bg-clip-text ">Your Cart</h3>
-                                <span className="text-gray-400">{`${cart.length} Item${cart.length > 1 ? 's' : ''}`}</span>
-                            </div>
-
-                            <div className="space-y-4 max-h-64 overflow-y-auto">
-                                {cart.map(item => (
-                                    <div key={item.id} className="flex justify-between items-center p-3 rounded-xl">
-                                        <div className="flex-grow">
-                                            <span className="text-gray-500 font -semibold block">{item.name}</span>
-                                            <span className="text-gray-400 text-sm">${(item.price * item.quantity).toFixed(2)}</span>
-                                        </div>
-                                        <button 
-                                            onClick={() => removeFromCart(item.id)}
-                                            className="text-red-400 hover:text-red-500 transition duration-300 ml-4"
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6z" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-
-                            <div className="mt-6 pt-4 border-t border-gray-700/50">
-                                <div className="flex justify-between mb-4">
-                                    <span className="text-lg font-semibold text-gray-300">Total:</span>
-                                    <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">${calculateTotal()}</span>
-                                </div>
-                                <button className="w-full bg-gradient-to-r from-cyan-400 to-blue-500 text-[#00ffc2]/50 py-3 rounded-full hover:opacity-90 transition duration-300 font-semibold shadow-lg">
-                                    Checkout
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
             </div>
-           
         </section>
     );
 };
